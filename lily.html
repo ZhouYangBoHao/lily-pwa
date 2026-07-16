@@ -273,7 +273,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 <option value="female-tianmei">🍬 MiniMax 甜美女生</option>
 <option value="female-shaonv">🌸 MiniMax 少女音</option>
 <option value="female-yujie">👑 MiniMax 御姐音</option>
-<option value="male-qn-jingying">🎩 MiniMax 精英男声</option></select>
+<option value="male-qn-jingying">🎩 MiniMax 精英男声</option>
+<option value="zh_warm_hearted_girl">💗 中文·暖心女孩</option>
+<option value="zh_gentle_senior">🍵 中文·温柔姐姐</option>
+<option value="zh_sweet_lady">🍭 中文·甜美淑女</option>
+<option value="zh_explorative_girl">✨ 中文·灵动少女</option></select>
 <div class="sh">💡 浏览器内置=免API不消耗额度；MiniMax=更高质量</div></div>
 </div>
 </div>
@@ -862,7 +866,12 @@ throw new Error('响应无内容: '+JSON.stringify(j).substring(0,200));
 async function callTTS(t){
 if(!D.apiKey)throw new Error('请配置Key');
 if(D.voice==='browser-zh')throw new Error('使用浏览器内置TTS');
-const voiceMap={'female-tianmei':'female-shaonv','female-shaonv':'female-shaonv','female-yujie':'female-yujie','male-qn-jingying':'male-qn-jingying'};
+// 音色映射:前端 value → API voice_id
+// MiniMax 平台用 female-* / male-qn-* (已确认)
+// 以下 4 个 zh_* 音色:用户提供的 voice_id 是 `Chinese (Mandarin)_*` 风格,但 MiniMax API 用 female-shaonv 风格
+// ⚠️ 暂用占位 `<待填_平台>` —— 用户需告知:① 哪个 TTS 平台(ElevenLabs? Edge? Azure?) ② 真实 voice_id
+// 如果目标平台不是 MiniMax,还得改 callTTS 的 URL (第 871 行)
+const voiceMap={'female-tianmei':'female-shaonv','female-shaonv':'female-shaonv','female-yujie':'female-yujie','male-qn-jingying':'male-qn-jingying','zh_warm_hearted_girl':'待填','zh_gentle_senior':'待填','zh_sweet_lady':'待填','zh_explorative_girl':'待填'};
 const vid=voiceMap[D.voice]||'female-shaonv';
 const ctrl=new AbortController();
 const tid=setTimeout(()=>ctrl.abort(),60000);
