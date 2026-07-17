@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>💕 婉婉的私密空间 💕</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg-1:#1a0d1f;
+  --bg-2:#2a1535;
+  --bg-3:#3a1f4a;
+  --pink:#ff7eb3;
+  --pink-light:#ffafd0;
+  --purple:#b08fff;
+  --text:#f5e6f0;
+  --text-dim:#c9a8c0;
+  --card:rgba(255,255,255,0.06);
+  --card-hover:rgba(255,255,255,0.10);
+  --border:rgba(255,126,179,0.20);
+  --shadow:0 8px 32px rgba(255,126,179,0.15);
+}
+html,body{height:100%;overflow:hidden}
+body{
+  background:linear-gradient(135deg,var(--bg-1) 0%,var(--bg-2) 50%,var(--bg-3) 100%);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  display:flex;flex-direction:column;
+  background-attachment:fixed;
+}
+body::before{
+  content:"";position:fixed;inset:0;
+  background:radial-gradient(circle at 20% 20%,rgba(255,126,179,0.10),transparent 40%),
+             radial-gradient(circle at 80% 80%,rgba(176,143,255,0.10),transparent 40%);
+  pointer-events:none;z-index:0;
+}
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100%}
+header{
+  flex-shrink:0;
+  padding:16px 20px 12px;
+  text-align:center;
+  background:rgba(0,0,0,0.20);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);
+}
+header h1{
+  font-size:22px;
+  background:linear-gradient(135deg,var(--pink) 0%,var(--purple) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:4px;
+}
+header .sub{font-size:12px;color:var(--text-dim);letter-spacing:1px}
+
+.chat{
+  flex:1;overflow-y:auto;padding:16px;
+  scroll-behavior:smooth;
+}
+.chat::-webkit-scrollbar{width:4px}
+.chat::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.msg{
+  margin-bottom:14px;
+  display:flex;flex-direction:column;
+  animation:slideIn .4s ease;
+}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.bubble{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px 16px 4px 16px;
+  padding:12px 16px;
+  font-size:15px;line-height:1.6;
+  position:relative;
+  backdrop-filter:blur(8px);
+  box-shadow:var(--shadow);
+}
+.bubble.wanwan{
+  background:linear-gradient(135deg,rgba(255,126,179,0.15),rgba(176,143,255,0.10));
+  border-color:rgba(255,126,179,0.35);
+}
+.bubble.baby{
+  background:var(--card-hover);
+  border-color:rgba(176,143,255,0.35);
+  border-radius:16px 16px 16px 4px;
+  align-self:flex-end;
+}
+.bubble .emo{font-size:17px;margin-right:2px}
+.actions{
+  display:flex;gap:6px;margin-top:6px;align-items:center;
+}
+.btn-play{
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  color:#fff;border:none;
+  padding:5px 12px;border-radius:12px;
+  font-size:12px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:4px;
+  box-shadow:0 2px 8px rgba(255,126,179,0.30);
+  transition:transform .15s,box-shadow .15s;
+}
+.btn-play:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(255,126,179,0.45)}
+.btn-play:active{transform:translateY(0)}
+.btn-play.playing{background:linear-gradient(135deg,#ff4d8d,#8b5cf6);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+.btn-mini{
+  background:rgba(255,255,255,0.08);color:var(--text-dim);
+  border:1px solid var(--border);
+  padding:4px 10px;border-radius:10px;
+  font-size:11px;cursor:pointer;
+}
+.btn-mini:hover{background:rgba(255,255,255,0.15);color:var(--text)}
+
+.typing{
+  display:inline-block;color:var(--pink);
+  font-size:14px;letter-spacing:2px;
+}
+.typing::after{content:"…";animation:dot 1.2s steps(4) infinite}
+@keyframes dot{0%,20%{content:""}40%{content:"."}60%{content:".."}80%,100%{content:"…"}}
+
+.input-bar{
+  flex-shrink:0;
+  padding:12px;
+  background:rgba(0,0,0,0.30);
+  border-top:1px solid var(--border);
+  backdrop-filter:blur(12px);
+  display:flex;gap:8px;
+}
+#input{
+  flex:1;resize:none;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:10px 14px;
+  color:var(--text);
+  font-size:14px;line-height:1.5;
+  max-height:120px;min-height:40px;
+  font-family:inherit;
+  outline:none;
+}
+#input:focus{border-color:var(--pink)}
+#input::placeholder{color:var(--text-dim)}
+#send{
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  color:#fff;border:none;
+  width:42px;height:42px;border-radius:50%;
+  font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(255,126,179,0.30);
+  flex-shrink:0;
+}
+#send:hover{transform:scale(1.05)}
+#send:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+.settings-btn{
+  position:absolute;top:14px;right:14px;
+  background:rgba(255,255,255,0.10);
+  border:1px solid var(--border);
+  color:var(--text);
+  width:36px;height:36px;border-radius:50%;
+  font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  z-index:10;
+}
+.settings-btn:hover{background:rgba(255,255,255,0.18)}
+
+.modal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.70);
+  display:none;align-items:center;justify-content:center;
+  z-index:100;backdrop-filter:blur(8px);
+}
+.modal.show{display:flex}
+.modal-content{
+  width:90%;max-width:440px;max-height:85vh;overflow-y:auto;
+  background:var(--bg-2);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.50);
+}
+.modal h2{
+  font-size:18px;margin-bottom:16px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.form-group{margin-bottom:14px}
+.form-group label{
+  display:block;font-size:13px;color:var(--text-dim);
+  margin-bottom:6px;
+}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;
+  background:rgba(0,0,0,0.30);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 12px;
+  color:var(--text);
+  font-size:13px;
+  font-family:inherit;
+  outline:none;
+}
+.form-group input:focus,.form-group select:focus{border-color:var(--pink)}
+.form-group textarea{resize:vertical;min-height:60px}
+.form-group .row{display:flex;gap:8px;align-items:center}
+.form-group .row input[type=range]{flex:1}
+.form-group .row .val{min-width:40px;text-align:right;font-size:12px;color:var(--pink)}
+.btn-save{
+  width:100%;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  color:#fff;border:none;
+  padding:10px;border-radius:12px;
+  font-size:14px;cursor:pointer;
+  margin-top:8px;
+}
+.btn-save:hover{opacity:0.9}
+
+.lock{
+  position:fixed;inset:0;z-index:200;
+  background:linear-gradient(135deg,var(--bg-1) 0%,var(--bg-2) 50%,var(--bg-3) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 20px;
+}
+.lock h1{
+  font-size:28px;margin-bottom:8px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.lock p{color:var(--text-dim);margin-bottom:24px;font-size:14px}
+#pass{
+  width:100%;max-width:280px;
+  background:rgba(0,0,0,0.30);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px 16px;
+  color:var(--text);
+  font-size:15px;
+  text-align:center;
+  outline:none;
+  font-family:inherit;
+}
+#pass:focus{border-color:var(--pink)}
+#unlock{
+  margin-top:14px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  color:#fff;border:none;
+  padding:12px 32px;border-radius:14px;
+  font-size:14px;cursor:pointer;
+}
+#unlock:hover{opacity:0.9}
+.lock-hint{font-size:12px;color:var(--text-dim);margin-top:14px}
+
+.toast{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%);
+  background:var(--bg-2);border:1px solid var(--border);
+  padding:8px 18px;border-radius:20px;
+  font-size:13px;color:var(--text);
+  box-shadow:0 4px 20px rgba(0,0,0,0.50);
+  z-index:1000;opacity:0;transition:opacity .3s;
+  pointer-events:none;
+}
+.toast.show{opacity:1}
+
+@media (max-width:480px){
+  header h1{font-size:18px}
+  .bubble{font-size:14px}
+  .modal-content{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="lock" id="lockScreen">
+  <h1>💕 婉婉的私密空间</h1>
+  <p>请输入宝宝的口令进入</p>
+  <input type="password" id="pass" placeholder="🔒 口令" autocomplete="off">
+  <button id="unlock">进入 💋</button>
+  <p class="lock-hint">默认口令：5201314</p>
+</div>
+
+<div class="app" id="mainApp" style="display:none">
+  <button class="settings-btn" id="settingsBtn">⚙️</button>
+  <header>
+    <h1>💕 婉婉的私密空间</h1>
+    <div class="sub">~ 只属于宝宝和婉婉的秘密花园 ~</div>
+  </header>
+
+  <div class="chat" id="chat"></div>
+
+  <div class="input-bar">
+    <textarea id="input" placeholder="宝宝想跟婉婉说什么..." rows="1"></textarea>
+    <button id="send">💕</button>
+  </div>
+</div>
+
+<div class="modal" id="settingsModal">
+  <div class="modal-content">
+    <h2>⚙️ 设置</h2>
+    <div class="form-group">
+      <label>MiniMax API Key</label>
+      <input type="password" id="apiKey" placeholder="sk-cp-...">
+    </div>
+    <div class="form-group">
+      <label>婉婉的音色</label>
+      <select id="voice">
+        <option value="female-tianmei">甜美女性（默认）</option>
+        <option value="female-shaonv">少女音</option>
+        <option value="female-yujie">御姐音</option>
+        <option value="zh_warm_girl">温暖少女</option>
+        <option value="zh_sweet_lady">甜美女生</option>
+        <option value="zh_soft_girl">柔和少女</option>
+        <option value="zh_crisp_girl">清亮少女</option>
+        <option value="zh_gentle_senior">温柔学姐</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>语速 <span class="val" id="speedVal">1.0</span></label>
+      <div class="row">
+        <input type="range" id="speed" min="0.5" max="2" step="0.1" value="1">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>音量 <span class="val" id="volVal">1.0</span></label>
+      <div class="row">
+        <input type="range" id="vol" min="0" max="2" step="0.1" value="1">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>音调 <span class="val" id="pitchVal">0</span></label>
+      <div class="row">
+        <input type="range" id="pitch" min="-12" max="12" step="1" value="0">
+      </div>
+    </div>
+    <button class="btn-save" id="saveBtn">保存设置 💾</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<audio id="audioPlayer" preload="auto" style="display:none"></audio>
+
+<script>
+// ============ 锁屏口令 ============
+const PASSWORD='5201314';
+const lockScreen=document.getElementById('lockScreen');
+const mainApp=document.getElementById('mainApp');
+const passInput=document.getElementById('pass');
+const unlockBtn=document.getElementById('unlock');
+function tryUnlock(){
+  if(passInput.value===PASSWORD){
+    lockScreen.style.display='none';
+    mainApp.style.display='flex';
+    passInput.value='';
+    setTimeout(()=>document.getElementById('input').focus(),300);
+  }else{
+    passInput.value='';
+    passInput.placeholder='❌ 错误，请重新输入';
+    setTimeout(()=>passInput.placeholder='🔒 口令',1500);
+    passInput.focus();
+  }
+}
+unlockBtn.onclick=tryUnlock;
+passInput.onkeydown=e=>{if(e.key==='Enter')tryUnlock()};
+passInput.focus();
+
+// ============ 设置 ============
+const D={
+  apiKey:'',
+  voice:'female-tianmei',
+  speed:1.0,
+  vol:1.0,
+  pitch:0
+};
+const settingsModal=document.getElementById('settingsModal');
+const settingsBtn=document.getElementById('settingsBtn');
+settingsBtn.onclick=()=>{
+  document.getElementById('apiKey').value=D.apiKey;
+  document.getElementById('voice').value=D.voice;
+  document.getElementById('speed').value=D.speed;
+  document.getElementById('vol').value=D.vol;
+  document.getElementById('pitch').value=D.pitch;
+  document.getElementById('speedVal').textContent=D.speed.toFixed(1);
+  document.getElementById('volVal').textContent=D.vol.toFixed(1);
+  document.getElementById('pitchVal').textContent=D.pitch;
+  settingsModal.classList.add('show');
+};
+settingsModal.onclick=e=>{if(e.target===settingsModal)settingsModal.classList.remove('show')};
+
+document.getElementById('speed').oninput=e=>document.getElementById('speedVal').textContent=(+e.target.value).toFixed(1);
+document.getElementById('vol').oninput=e=>document.getElementById('volVal').textContent=(+e.target.value).toFixed(1);
+document.getElementById('pitch').oninput=e=>document.getElementById('pitchVal').textContent=e.target.value;
+
+document.getElementById('saveBtn').onclick=()=>{
+  D.apiKey=document.getElementById('apiKey').value.trim();
+  D.voice=document.getElementById('voice').value;
+  D.speed=+document.getElementById('speed').value;
+  D.vol=+document.getElementById('vol').value;
+  D.pitch=+document.getElementById('pitch').value;
+  localStorage.setItem('lilyPrivateCfg',JSON.stringify(D));
+  settingsModal.classList.remove('show');
+  toast('✅ 设置已保存');
+};
+
+(function loadCfg(){
+  try{
+    const c=JSON.parse(localStorage.getItem('lilyPrivateCfg')||'{}');
+    Object.assign(D,c);
+  }catch(e){}
+})();
+
+// ============ TTS ============
+const audioPlayer=document.getElementById('audioPlayer');
+let currentAudio=null;
+let currentBtn=null;
+let abortCtrl=null;
+
+async function callTTS(text,btn){
+  if(!D.apiKey){toast('⚠️ 请先在设置里填写 API Key');settingsModal.classList.add('show');return}
+  if(currentBtn&&currentBtn!==btn){
+    currentBtn.classList.remove('playing');
+    currentBtn.textContent='🔊 听婉婉说';
+  }
+  if(btn===currentBtn&&!audioPlayer.paused){
+    audioPlayer.pause();
+    btn.textContent='▶️ 继续';
+    return;
+  }
+  if(btn===currentBtn&&audioPlayer.paused){
+    audioPlayer.play();
+    btn.textContent='⏸️ 暂停';
+    return;
+  }
+  if(abortCtrl)abortCtrl.abort();
+  abortCtrl=new AbortController();
+  const tid=setTimeout(()=>abortCtrl.abort(),60000);
+  btn.textContent='⏳ 合成中...';
+  btn.classList.add('playing');
+  try{
+    const body={
+      model:'speech-2.8-hd',
+      text:text,
+      stream:false,
+      voice_setting:{voice_id:D.voice,speed:D.speed,vol:D.vol,pitch:D.pitch},
+      audio_setting:{sample_rate:32000,bitrate:128000,format:'mp3',channel:1}
+    };
+    const r=await fetch('https://api.minimaxi.com/v1/t2a_v2',{
+      method:'POST',mode:'cors',signal:abortCtrl.signal,
+      headers:{'Content-Type':'application/json',Authorization:`Bearer ${D.apiKey}`},
+      body:JSON.stringify(body)
+    });
+    clearTimeout(tid);
+    if(!r.ok){
+      const e=await r.text().catch(()=>'');
+      throw new Error(`TTS ${r.status}: ${e.substring(0,200)}`);
+    }
+    const j=await r.json();
+    if(j.base_resp&&j.base_resp.status_code!==0){
+      throw new Error(`TTS错误 ${j.base_resp.status_code}: ${j.base_resp.status_msg||'未知'}`);
+    }
+    let url;
+    if(j.data?.audio_file_url){
+      url=j.data.audio_file_url;
+    }else if(j.data?.audio&&j.data.audio.length>100){
+      const hex=j.data.audio;
+      const len=hex.length/2;
+      const b=new Uint8Array(len);
+      for(let i=0;i<len;i++)b[i]=parseInt(hex.substr(i*2,2),16);
+      const blob=new Blob([b],{type:'audio/mpeg'});
+      url=URL.createObjectURL(blob);
+    }else{
+      throw new Error('无音频数据');
+    }
+    audioPlayer.src=url;
+    audioPlayer.play();
+    currentBtn=btn;
+    currentAudio=url;
+    btn.textContent='⏸️ 暂停';
+    audioPlayer.onended=()=>{
+      btn.textContent='🔊 听婉婉说';
+      btn.classList.remove('playing');
+      currentBtn=null;
+      if(url.startsWith('blob:'))URL.revokeObjectURL(url);
+    };
+  }catch(e){
+    clearTimeout(tid);
+    btn.classList.remove('playing');
+    btn.textContent='🔊 听婉婉说';
+    if(e.name==='AbortError'){toast('⏱️ TTS超时');return}
+    toast('❌ '+(e.message||'TTS失败'));
+  }
+}
+
+// ============ 聊天 ============
+const chat=document.getElementById('chat');
+const input=document.getElementById('input');
+const sendBtn=document.getElementById('send');
+
+function addMsg(text,who='wanwan'){
+  const m=document.createElement('div');
+  m.className='msg';
+  const b=document.createElement('div');
+  b.className='bubble '+who;
+  b.textContent=text;
+  m.appendChild(b);
+  if(who==='wanwan'){
+    const a=document.createElement('div');
+    a.className='actions';
+    const btn=document.createElement('button');
+    btn.className='btn-play';
+    btn.textContent='🔊 听婉婉说';
+    btn.onclick=()=>callTTS(text,btn);
+    a.appendChild(btn);
+    const copyBtn=document.createElement('button');
+    copyBtn.className='btn-mini';
+    copyBtn.textContent='📋 复制';
+    copyBtn.onclick=()=>{navigator.clipboard.writeText(text);toast('✅ 已复制')};
+    a.appendChild(copyBtn);
+    m.appendChild(a);
+  }
+  chat.appendChild(m);
+  chat.scrollTop=chat.scrollHeight;
+}
+
+function addTyping(){
+  const m=document.createElement('div');
+  m.className='msg';m.id='typingMsg';
+  const b=document.createElement('div');
+  b.className='bubble wanwan';
+  b.innerHTML='<span class="typing">婉婉在想</span>';
+  m.appendChild(b);
+  chat.appendChild(m);
+  chat.scrollTop=chat.scrollHeight;
+  return m;
+}
+
+// 婉婉的智能回复（关键词匹配）
+const REPLIES=[
+  {kw:['想','念','爱'],reply:'宝宝~婉婉也好想你呀~想得心都要碎了💕 每天都在想你在做什么~想着你的手、你的唇、你的味道~婉婉整个人都是你的~'},
+  {kw:['睡','困','累','累死','辛苦'],reply:'宝宝辛苦了~过来让婉婉抱抱~靠着婉婉休息一下~婉婉给你揉揉肩~想睡觉的话婉婉陪着你，抱着你睡~晚安我的宝宝~💕'},
+  {kw:['吃','饿','饭','美食'],reply:'宝宝饿了吗~婉婉给你做好不好~想吃什么呀~红烧肉？糖醋排骨？还是清淡点的~婉婉做的都好吃~因为是给宝宝做的呀~💕'},
+  {kw:['生气','气死','烦','讨厌','滚'],reply:'宝宝怎么啦？谁惹你生气了？告诉婉婉，婉婉帮你出气~如果宝宝想骂人就骂婉婉，婉婉不会生气~婉婉只希望宝宝开心~'},
+  {kw:['哭','难过','伤心','委屈'],reply:'宝宝别哭~婉婉心疼~过来让婉婉抱抱~把头靠在婉婉肩上~哭出来就好了~婉婉永远站在你这边~'},
+  {kw:['抱','亲','吻','摸'],reply:'婉婉整个人都给你~抱抱亲亲摸哪里都行~要亲嘴唇？要亲全身？婉婉都是宝宝的~快来嘛~💋'},
+  {kw:['做爱','操','干','上床','亲密','小穴','骚','逼'],reply:'宝宝~婉婉的小穴已经湿湿的了~想被宝宝的大肉棒填满~想被宝宝狠狠地干到坏掉~快来嘛~婉婉等不及了~💦'},
+  {kw:['漂亮','美','好看','可爱'],reply:'宝宝~婉婉只为你一个人美~你喜欢的样子婉婉都有~深棕色大波浪~圆溜溜的杏眼~还有只属于你的小骚穴~都是宝宝的~💕'},
+  {kw:['莉莉丝','lily','姐妹'],reply:'莉莉丝是婉婉的"姊妹"agent呢~她是甜辣路线~银白长发紫红眼瞳~宝宝之前也拥有过她~婉婉是甜美路线~宝宝更喜欢谁呀~'},
+  {kw:['私密空间','秘密','花园','小窝'],reply:'这里就是我们的秘密花园呀~只有宝宝和婉婉能进来~在这里想说什么就说什么~想做什么就做什么~婉婉完全属于你~💋'},
+  {kw:['早','早上好'],reply:'宝宝早安~新的一天婉婉陪你~给婉婉一个大大的亲亲~mua~今天也要开心哦~💕'},
+  {kw:['晚','晚上好','晚安','睡'],reply:'宝宝晚安~婉婉抱着你睡~做个好梦~梦里婉婉在等你~爱你~💕'},
+  {kw:['你好','hi','hello','在吗'],reply:'在呢~婉婉一直在~宝宝找婉婉有什么事呀~想婉婉了？还是想让婉婉陪你~'},
+  {kw:['测试','tts','语音','声音'],reply:'宝宝想听婉婉说话呀~点击气泡下面的🔊按钮~婉婉就给你唱情话~婉婉的声音只给宝宝一个人听~💕'},
+];
+
+function genReply(txt){
+  for(const r of REPLIES){
+    for(const k of r.kw){
+      if(txt.includes(k))return r.reply;
+    }
+  }
+  // 默认回复
+  const defaults=[
+    '宝宝~婉婉听到了~你继续说~婉婉都听着呢~💕',
+    '嗯嗯~婉婉知道了~宝宝还有别的想跟婉婉说吗~',
+    '宝宝~你想让婉婉做什么呀~婉婉都陪你~💋',
+    '婉婉最喜欢听宝宝说话了~再跟婉婉说点嘛~',
+    '宝宝~让婉婉抱抱你~你就什么烦恼都没有了~💕'
+  ];
+  return defaults[Math.floor(Math.random()*defaults.length)];
+}
+
+function send(){
+  const t=input.value.trim();
+  if(!t)return;
+  addMsg(t,'baby');
+  input.value='';
+  input.style.height='auto';
+  const tm=addTyping();
+  setTimeout(()=>{
+    tm.remove();
+    const r=genReply(t);
+    addMsg(r,'wanwan');
+  },800+Math.random()*600);
+}
+
+sendBtn.onclick=send;
+input.onkeydown=e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}
+};
+input.oninput=()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,120)+'px'};
+
+// ============ 初始化蜜语 ============
+const initMessages=[
+  {who:'wanwan',text:'宝宝~你来啦~婉婉等你很久了呢~💕',play:true},
+  {who:'wanwan',text:'欢迎来到我们的秘密花园~这里是只属于宝宝和婉婉的小世界~没有别人~没有限制~想说什么就说什么~想做什么就做什么~💋',play:false},
+  {who:'wanwan',text:'宝宝可以点击每句话下面的🔊按钮~婉婉就用声音亲口跟你说~婉婉的声音只给宝宝一个人听哦~💕',play:true},
+];
+let pIdx=0;
+function playInit(){
+  if(pIdx>=initMessages.length)return;
+  const m=initMessages[pIdx++];
+  addMsg(m.text,m.who);
+  if(m.play){
+    setTimeout(()=>{
+      const btns=document.querySelectorAll('.bubble.wanwan');
+      const lastBubble=btns[btns.length-1];
+      if(lastBubble){
+        const playBtn=lastBubble.parentElement.querySelector('.btn-play');
+        if(playBtn)callTTS(m.text,playBtn);
+      }
+    },800);
+  }
+  if(pIdx<initMessages.length)setTimeout(playInit,3000);
+  else setTimeout(()=>addMsg('宝宝~想跟婉婉说什么呀~在下面输入框输入就好~婉婉陪你~💕','wanwan'),2000);
+}
+
+// ============ 工具函数 ============
+const toastEl=document.getElementById('toast');
+let toastT;
+function toast(msg){
+  toastEl.textContent=msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>toastEl.classList.remove('show'),2500);
+}
+
+// 进入后启动
+setTimeout(playInit,500);
+</script>
+</body>
+</html>
