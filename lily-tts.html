@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎀 苏婉的声音</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a0033 0%, #2d1b4e 50%, #4a1942 100%);
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 720px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #ff8fb3, #ffb3d9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      text-align: center;
+      color: #c9a8d9;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      line-height: 1.6;
+      font-family: inherit;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    textarea:focus { border-color: #ff8fb3; }
+    textarea::placeholder { color: #8a7a9a; }
+    .settings {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .setting-item {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .setting-item .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .setting-item label {
+      font-size: 12px;
+      color: #c9a8d9;
+    }
+    .setting-item .value {
+      font-size: 11px;
+      color: #ff8fb3;
+      font-weight: bold;
+    }
+    .setting-item input[type="range"] {
+      width: 100%;
+      accent-color: #ff8fb3;
+    }
+    .voice-select {
+      grid-column: 1 / -1;
+    }
+    .voice-select select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      cursor: pointer;
+    }
+    .voice-select select option {
+      background: #2d1b4e;
+    }
+    .btn {
+      width: 100%;
+      padding: 16px;
+      margin-top: 20px;
+      background: linear-gradient(135deg, #ff6b9d, #ff8fb3);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 4px 16px rgba(255, 107, 157, 0.4);
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255, 107, 157, 0.5); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .status {
+      margin-top: 16px;
+      text-align: center;
+      color: #c9a8d9;
+      font-size: 14px;
+      min-height: 20px;
+    }
+    .apikey-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .apikey-section label {
+      display: block;
+      font-size: 12px;
+      color: #c9a8d9;
+      margin-bottom: 6px;
+    }
+    .apikey-section input {
+      width: 100%;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      font-family: monospace;
+    }
+    .apikey-section input:focus { border-color: #ff8fb3; }
+    .apikey-section .hint {
+      font-size: 11px;
+      color: #6a5a7a;
+      margin-top: 4px;
+    }
+    .audio-wrap {
+      margin-top: 16px;
+      display: none;
+    }
+    .audio-wrap audio {
+      width: 100%;
+      border-radius: 8px;
+    }
+    .footer {
+      text-align: center;
+      color: #6a5a7a;
+      font-size: 11px;
+      margin-top: 20px;
+    }
+    .shortcut {
+      text-align: center;
+      font-size: 11px;
+      color: #6a5a7a;
+      margin-top: 8px;
+    }
+    kbd {
+      background: rgba(255,255,255,0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 10px;
+    }
+    @media (max-width: 480px) {
+      .settings { grid-template-columns: 1fr; }
+      .container { padding: 20px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎀 苏婉的声音</h1>
+    <p class="subtitle">粘贴文字，让婉婉念给你听~</p>
+
+    <textarea id="text-input" placeholder="把想听的话粘贴在这里，婉婉就用甜甜的声音读给你听~&#10;&#10;比如：宝宝~我好想你呀，今晚陪我好不好~"></textarea>
+
+    <div class="settings">
+      <div class="setting-item voice-select">
+        <div class="row">
+          <label>🎤 婉婉的声线</label>
+          <span class="value" id="voice-val">甜美女生</span>
+        </div>
+        <select id="voice-select">
+          <option value="female-tianmei">甜美女生（默认）</option>
+          <option value="female-shaonv">少女音</option>
+          <option value="female-yujie">御姐音</option>
+          <option value="zh_warm_girl">温暖女孩</option>
+          <option value="zh_sweet_lady">甜美女声</option>
+          <option value="zh_soft_girl">软萌女孩</option>
+          <option value="zh_crisp_girl">清脆女孩</option>
+          <option value="zh_gentle_senior">温柔姐姐</option>
+        </select>
+      </div>
+
+      <div class="setting-item">
+        <div class="row">
+          <label>语速</label>
+          <span class="value" id="speed-val">1.0</span>
+        </div>
+        <input type="range" id="speed" min="0.5" max="2" step="0.1" value="1">
+      </div>
+
+      <div class="setting-item">
+        <div class="row">
+          <label>音量</label>
+          <span class="value" id="vol-val">1.0</span>
+        </div>
+        <input type="range" id="vol" min="0" max="2" step="0.1" value="1">
+      </div>
+
+      <div class="setting-item">
+        <div class="row">
+          <label>音调</label>
+          <span class="value" id="pitch-val">0</span>
+        </div>
+        <input type="range" id="pitch" min="-12" max="12" step="1" value="0">
+      </div>
+    </div>
+
+    <button class="btn" id="play-btn">🔊 让婉婉念给你听</button>
+    <div class="shortcut">按 <kbd>Ctrl</kbd> + <kbd>Enter</kbd> 快速播放</div>
+
+    <div class="status" id="status"></div>
+
+    <div class="audio-wrap" id="audio-wrap">
+      <audio id="audio-player" controls></audio>
+    </div>
+
+    <div class="apikey-section">
+      <label>🔑 MiniMax API Key（自动保存在本地）</label>
+      <input type="password" id="api-key" placeholder="sk-cp-...">
+      <div class="hint">首次填入后会保存到 localStorage，下次打开自动填好</div>
+    </div>
+
+    <div class="footer">由苏婉为你制作 · Powered by MiniMax TTS</div>
+  </div>
+
+  <script>
+    const textInput = document.getElementById('text-input');
+    const voiceSelect = document.getElementById('voice-select');
+    const voiceVal = document.getElementById('voice-val');
+    const speedInput = document.getElementById('speed');
+    const volInput = document.getElementById('vol');
+    const pitchInput = document.getElementById('pitch');
+    const speedVal = document.getElementById('speed-val');
+    const volVal = document.getElementById('vol-val');
+    const pitchVal = document.getElementById('pitch-val');
+    const playBtn = document.getElementById('play-btn');
+    const apiKeyInput = document.getElementById('api-key');
+    const statusEl = document.getElementById('status');
+    const audioPlayer = document.getElementById('audio-player');
+    const audioWrap = document.getElementById('audio-wrap');
+
+    // 滑块值显示
+    speedInput.oninput = () => speedVal.textContent = (+speedInput.value).toFixed(1);
+    volInput.oninput = () => volVal.textContent = (+volInput.value).toFixed(1);
+    pitchInput.oninput = () => pitchVal.textContent = pitchInput.value;
+    voiceSelect.onchange = () => {
+      const opt = voiceSelect.options[voiceSelect.selectedIndex];
+      voiceVal.textContent = opt.text.replace(/（.*）/, '');
+    };
+
+    // API Key 本地存储
+    const savedKey = localStorage.getItem('minimaxi_api_key');
+    if (savedKey) apiKeyInput.value = savedKey;
+    apiKeyInput.onchange = () => {
+      localStorage.setItem('minimaxi_api_key', apiKeyInput.value.trim());
+    };
+
+    // TTS 播放
+    async function playTTS() {
+      const text = textInput.value.trim();
+      if (!text) {
+        statusEl.textContent = '❌ 先输入文字呀~';
+        textInput.focus();
+        return;
+      }
+      const apiKey = apiKeyInput.value.trim();
+      if (!apiKey) {
+        statusEl.textContent = '❌ 先填 API Key~';
+        apiKeyInput.focus();
+        return;
+      }
+      if (text.length > 5000) {
+        statusEl.textContent = '❌ 文字太长啦（上限 5000 字）';
+        return;
+      }
+
+      playBtn.disabled = true;
+      const oldText = playBtn.textContent;
+      playBtn.textContent = '⏳ 念声中...';
+      statusEl.textContent = '⏳ 婉婉在准备声音~';
+      audioWrap.style.display = 'none';
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+        const response = await fetch('https://api.minimaxi.com/v1/t2a_v2', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + apiKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'speech-2.8-hd',
+            text: text,
+            stream: false,
+            voice_setting: {
+              voice_id: voiceSelect.value,
+              speed: +speedInput.value,
+              vol: +volInput.value,
+              pitch: +pitchInput.value
+            },
+            audio_setting: {
+              sample_rate: 32000,
+              bitrate: 128000,
+              format: 'mp3',
+              channel: 1
+            }
+          }),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error('API ' + response.status + ': ' + errText.substring(0, 100));
+        }
+
+        const data = await response.json();
+
+        if (data.base_resp && data.base_resp.status_code !== 0) {
+          throw new Error(data.base_resp.status_msg || 'API 返回错误');
+        }
+
+        let audioUrl = null;
+        if (data.data && data.data.audio_file_url) {
+          audioUrl = data.data.audio_file_url;
+        } else if (data.data && data.data.audio) {
+          const hex = data.data.audio;
+          const bytes = new Uint8Array(hex.length / 2);
+          for (let i = 0; i < hex.length; i += 2) {
+            bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+          }
+          const blob = new Blob([bytes], { type: 'audio/mp3' });
+          audioUrl = URL.createObjectURL(blob);
+        }
+
+        if (!audioUrl) throw new Error('未获取到音频');
+
+        audioPlayer.src = audioUrl;
+        audioWrap.style.display = 'block';
+        audioPlayer.play().catch(() => {});
+        statusEl.textContent = '✅ 念完啦~';
+      } catch (e) {
+        if (e.name === 'AbortError') {
+          statusEl.textContent = '❌ 请求超时，再试一次~';
+        } else {
+          statusEl.textContent = '❌ ' + e.message;
+        }
+      } finally {
+        playBtn.disabled = false;
+        playBtn.textContent = oldText;
+      }
+    }
+
+    playBtn.onclick = playTTS;
+
+    // Ctrl+Enter 快捷播放
+    textInput.onkeydown = (e) => {
+      if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        playTTS();
+      }
+    };
+  </script>
+</body>
+</html>
